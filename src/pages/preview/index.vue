@@ -1,9 +1,19 @@
 <template>
   <div class="preview-page">
-    <image :src="tempPreviewImgSrc" class="img" @load="imgload"></image>
-    <canvas canvas-id="img-canvas" class="img-canvas" id="img-canvas-dom" :style="{ flex: '0 0 auto', width: '300px',height: '225px' }"></canvas>
+    <image :src="tempPreviewImgSrc" class="img" @load="imgload" mode="aspectFit"></image>
+    <canvas canvas-id="img-canvas" class="img-canvas" id="img-canvas-dom" :style="{ flex: '0 0 auto', width: autoWidth + 'px',height: autoHeight + 'px' }"></canvas>
     <div class="wrap">
       <mpvue-echarts lazyLoad :echarts="echarts" :onInit="handleInit" ref="echarts" />
+      <div class="loadEffect" v-if="loading">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
   </div>
 </template>
@@ -25,8 +35,10 @@ export default {
     return {
       echarts,
       option: null,
-      autoHeight: 0,
-      scale: 0
+      autoWidth: 300,
+      autoHeight: 400,
+      scale: 0,
+      loading: true
     }
   },
   computed: {
@@ -55,10 +67,25 @@ export default {
     },
     async imgload (e) {
       // console.log('imgload', e.mp.detail)
-      // // 获取图片的长宽
-      // const imgWidth = e.mp.detail.width
-      // const imgHeight = e.mp.detail.height
-      // this.scale = imgWidth / imgHeight
+      // 获取图片的长宽
+      const imgWidth = e.mp.detail.width
+      const imgHeight = e.mp.detail.height
+      this.scale = imgWidth / imgHeight
+      console.log('图片真实宽度', imgWidth)
+      console.log('图片真实高度', imgHeight)
+      console.log('图片真实宽高比例', this.scale)
+      const windowWidth = wx.getSystemInfoSync().windowWidth
+      console.log('屏幕真实宽度', windowWidth)
+      const shouldHeight = windowWidth / this.scale
+      console.log('按照scale和屏幕真实宽度，高度应该为', shouldHeight)
+      this.autoWidth = windowWidth
+      this.autoHeight = shouldHeight
+      const base64 = await this._getBase64ByCanvas('img-canvas', this.autoWidth, this.autoHeight)
+      const carInfo = await this._getCarInfo(base64)
+      console.log('carInfo', carInfo)
+      this.initChart(carInfo.result)
+      this.loading = false
+
       // var query = wx.createSelectorQuery()
       // query.select('#img-canvas-dom').boundingClientRect((res) => {
       //   this.imgCanvasInfo(res)
@@ -90,7 +117,7 @@ export default {
           name: '车型概率',
           label: {
             normal: {
-              formatter: '{a|{a}}{abg|}\n{hr|}\n {b|{b}:}{per|{d}%} ',
+              formatter: '{b|{b}}\n{hr|}\n{a|{a}: }{per|{d}%}{abg|}',
               backgroundColor: '#eee',
               borderColor: '#aaa',
               borderWidth: 0.5,
@@ -121,15 +148,17 @@ export default {
                   height: 0
                 },
                 b: {
-                  fontSize: 10,
-                  lineHeight: 22
+                  fontSize: 9,
+                  lineHeight: 22,
+                  align: 'center'
                 },
                 per: {
                   fontSize: 9,
                   color: '#eee',
                   backgroundColor: '#334455',
                   padding: [1, 1.3],
-                  borderRadius: 2
+                  borderRadius: 2,
+                  align: 'center'
                 }
               }
             }
@@ -207,15 +236,15 @@ export default {
   },
   async mounted () {
     console.log('preview mounted')
-    const imgWidth = 300
-    const imgHeight = 225
-    const base64 = await this._getBase64ByCanvas('img-canvas', imgWidth, imgHeight)
+    // const imgWidth = 300
+    // const imgHeight = 225
+    // const base64 = await this._getBase64ByCanvas('img-canvas', this.autoWidth, this.autoHeight)
     // // const base64 = await api.getBase64(this.tempPreviewImgSrc)
-    console.log('base64', base64)
+    // console.log('base64', base64)
     // // alert(base64)
-    const carInfo = await this._getCarInfo(base64)
-    console.log('carInfo', carInfo)
-    this.initChart(carInfo.result)
+    // const carInfo = await this._getCarInfo(base64)
+    // console.log('carInfo', carInfo)
+    // this.initChart(carInfo.result)
 
     // const base64 = await api.getBase64(this.tempPreviewImgSrc)
     // console.log('base64', base64)
@@ -247,11 +276,85 @@ export default {
     align-items: center;
   }
   .img{
-    display: none;
+    /*display: none;*/
     flex: 0 0 auto;
+  }
+  .img-canvas{
+    position: absolute;
+    visibility: hidden;
   }
   .wrap{
     flex: 1;
     width: 100%;
+  }
+  .loadEffect{
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    margin: 0 auto;
+    margin-top:100px;
+  }
+  .loadEffect span{
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: lightgreen;
+    position: absolute;
+    -webkit-animation: load 1.04s ease infinite;
+  }
+  @-webkit-keyframes load{
+    0%{
+      -webkit-transform: scale(1.2);
+      opacity: 1;
+    }
+    100%{
+      -webkit-transform: scale(.3);
+      opacity: 0.5;
+    }
+  }
+  .loadEffect span:nth-child(1){
+    left: 0;
+    top: 50%;
+    margin-top:-10px;
+    -webkit-animation-delay:0.13s;
+  }
+  .loadEffect span:nth-child(2){
+    left: 14px;
+    top: 14px;
+    -webkit-animation-delay:0.26s;
+  }
+  .loadEffect span:nth-child(3){
+    left: 50%;
+    top: 0;
+    margin-left: -10px;
+    -webkit-animation-delay:0.39s;
+  }
+  .loadEffect span:nth-child(4){
+    top: 14px;
+    right:14px;
+    -webkit-animation-delay:0.52s;
+  }
+  .loadEffect span:nth-child(5){
+    right: 0;
+    top: 50%;
+    margin-top:-10px;
+    -webkit-animation-delay:0.65s;
+  }
+  .loadEffect span:nth-child(6){
+    right: 14px;
+    bottom:14px;
+    -webkit-animation-delay:0.78s;
+  }
+  .loadEffect span:nth-child(7){
+    bottom: 0;
+    left: 50%;
+    margin-left: -10px;
+    -webkit-animation-delay:0.91s;
+  }
+  .loadEffect span:nth-child(8){
+    bottom: 14px;
+    left: 14px;
+    -webkit-animation-delay:1.04s;
   }
 </style>
