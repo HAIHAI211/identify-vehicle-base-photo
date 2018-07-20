@@ -34,31 +34,6 @@ const api = {
     } catch (e) {
       console.log('error', e)
     }
-  },
-  async getBase64 (imgSrc) {
-    try {
-      const result = await request({
-        url: imgSrc,
-        method: 'GET',
-        responseType: 'arraybuffer'
-      })
-      return wx.arrayBufferToBase64(result)
-    } catch (e) {
-      console.log('error', e)
-    }
-  },
-  getCarInfo (base64, token) {
-    return request({
-      url: `https://aip.baidubce.com/rest/2.0/image-classify/v1/car?access_token=${token}`,
-      method: 'POST',
-      header: {
-        'content-type': 'application/x-www-form-urlencoded'
-      },
-      data: {
-        image: base64,
-        top_num: 3
-      }
-    })
   }
 }
 

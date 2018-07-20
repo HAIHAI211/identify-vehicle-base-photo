@@ -39,7 +39,7 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url("http://www.ciweipdf.com/static/media/hero.99c69e64.jpg") no-repeat ;
+    background: url("http://img-1255554167.picsh.myqcloud.com/1.jpg") no-repeat ;
     background-position: 50%;
     background-size: cover;
     display: flex;
