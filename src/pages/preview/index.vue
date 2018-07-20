@@ -1,21 +1,21 @@
 <template>
   <div class="preview-page">
     <image :src="tempPreviewImgSrc" class="img" @load="imgload" mode="aspectFit"></image>
-    <div class="canvas-wrap">
-      <canvas canvas-id="img-canvas" class="img-canvas" id="img-canvas-dom" :style="{ flex: '0 0 auto', width: autoWidth + 'px',height: autoHeight + 'px' }"></canvas>
-    </div>
+    <!--<div class="canvas-wrap">-->
+      <!--<canvas canvas-id="img-canvas" class="img-canvas" id="img-canvas-dom" :style="{ flex: '0 0 auto', width: autoWidth + 'px',height: autoHeight + 'px' }"></canvas>-->
+    <!--</div>-->
     <div class="wrap">
       <mpvue-echarts lazyLoad :echarts="echarts" :onInit="handleInit" ref="echarts" />
-      <div class="loadEffect" v-if="loading">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
+      <!--<div class="loadEffect" v-if="loading">-->
+        <!--<span></span>-->
+        <!--<span></span>-->
+        <!--<span></span>-->
+        <!--<span></span>-->
+        <!--<span></span>-->
+        <!--<span></span>-->
+        <!--<span></span>-->
+        <!--<span></span>-->
+      <!--</div>-->
     </div>
   </div>
 </template>
@@ -47,6 +47,21 @@ export default {
   },
   mounted () {
     this.loading = true
+    console.log('开始上传图片，本地图片地址为', this.tempPreviewImgSrc)
+    let _this = this
+    wx.uploadFile({
+      url: 'http://localhost:8082/football/upload/pic', // 仅为示例，非真实的接口地址
+      filePath: this.tempPreviewImgSrc,
+      name: 'file',
+      formData: {
+        'user': 'test'
+      },
+      success (res) {
+        const data = res.data
+        console.log('res', data)
+        _this._getCarInfo(data)
+      }
+    })
   },
   methods: {
     reverseImgData (res) {
@@ -69,24 +84,24 @@ export default {
       console.log('base64', base64)
     },
     async imgload (e) {
-      // 获取图片的长宽
-      const imgWidth = e.mp.detail.width
-      const imgHeight = e.mp.detail.height
-      this.scale = imgWidth / imgHeight
-      console.log('图片真实宽度', imgWidth)
-      console.log('图片真实高度', imgHeight)
-      console.log('图片真实宽高比例', this.scale)
-      const windowWidth = wx.getSystemInfoSync().windowWidth
-      console.log('屏幕真实宽度', windowWidth)
-      const shouldHeight = windowWidth / this.scale
-      console.log('按照scale和屏幕真实宽度，高度应该为', shouldHeight)
-      this.autoWidth = windowWidth
-      this.autoHeight = shouldHeight
-      const base64 = await this._getBase64ByCanvas('img-canvas', this.autoWidth, this.autoHeight)
-      const carInfo = await this._getCarInfo(base64)
-      console.log('carInfo', carInfo)
-      this.initChart(carInfo.result)
-      this.loading = false
+      // // 获取图片的长宽
+      // const imgWidth = e.mp.detail.width
+      // const imgHeight = e.mp.detail.height
+      // this.scale = imgWidth / imgHeight
+      // console.log('图片真实宽度', imgWidth)
+      // console.log('图片真实高度', imgHeight)
+      // console.log('图片真实宽高比例', this.scale)
+      // const windowWidth = wx.getSystemInfoSync().windowWidth
+      // console.log('屏幕真实宽度', windowWidth)
+      // const shouldHeight = windowWidth / this.scale
+      // console.log('按照scale和屏幕真实宽度，高度应该为', shouldHeight)
+      // this.autoWidth = windowWidth
+      // this.autoHeight = shouldHeight
+      // const base64 = await this._getBase64ByCanvas('img-canvas', this.autoWidth, this.autoHeight)
+      // const carInfo = await this._getCarInfo(base64)
+      // console.log('carInfo', carInfo)
+      // this.initChart(carInfo.result)
+      // this.loading = false
     },
     initChart (arr) {
       this.option = this.initOption(arr)
@@ -223,6 +238,7 @@ export default {
           carInfo = await api.getCarInfo(base64, this.accessToken)
         }
       }
+      this.initChart(carInfo.result)
       return carInfo
     }
   }
