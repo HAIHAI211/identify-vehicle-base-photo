@@ -1,7 +1,9 @@
 <template>
   <div class="preview-page">
     <image :src="tempPreviewImgSrc" class="img" @load="imgload" mode="aspectFit"></image>
-    <canvas canvas-id="img-canvas" class="img-canvas" id="img-canvas-dom" :style="{ flex: '0 0 auto', width: autoWidth + 'px',height: autoHeight + 'px' }"></canvas>
+    <div class="canvas-wrap">
+      <canvas canvas-id="img-canvas" class="img-canvas" id="img-canvas-dom" :style="{ flex: '0 0 auto', width: autoWidth + 'px',height: autoHeight + 'px' }"></canvas>
+    </div>
     <div class="wrap">
       <mpvue-echarts lazyLoad :echarts="echarts" :onInit="handleInit" ref="echarts" />
       <div class="loadEffect" v-if="loading">
@@ -24,8 +26,6 @@ import UPNG from 'upng-js'
 import * as echarts from '../../../static/echarts.simple.min'
 import mpvueEcharts from 'mpvue-echarts'
 import api from '../../api'
-// import base64config from './config'
-// , width: '100%',height: autoHeight + 'px'
 let chart = null
 export default {
   components: {
@@ -44,6 +44,9 @@ export default {
   computed: {
     ...mapState(['tempPreviewImgSrc', 'accessToken']),
     ...mapActions(['getToken'])
+  },
+  mounted () {
+    this.loading = true
   },
   methods: {
     reverseImgData (res) {
@@ -66,7 +69,6 @@ export default {
       console.log('base64', base64)
     },
     async imgload (e) {
-      // console.log('imgload', e.mp.detail)
       // 获取图片的长宽
       const imgWidth = e.mp.detail.width
       const imgHeight = e.mp.detail.height
@@ -85,16 +87,6 @@ export default {
       console.log('carInfo', carInfo)
       this.initChart(carInfo.result)
       this.loading = false
-
-      // var query = wx.createSelectorQuery()
-      // query.select('#img-canvas-dom').boundingClientRect((res) => {
-      //   this.imgCanvasInfo(res)
-      // }).exec()
-      // const base64 = await this._getBase64ByCanvas('img-canvas', imgWidth, imgHeight)
-      // console.log('base64', base64)
-      // const carInfo = await this._getCarInfo(base64)
-      // console.log('carInfo', carInfo)
-      // this.initChart(carInfo.result)
     },
     initChart (arr) {
       this.option = this.initOption(arr)
@@ -233,33 +225,6 @@ export default {
       }
       return carInfo
     }
-  },
-  async mounted () {
-    console.log('preview mounted')
-    // const imgWidth = 300
-    // const imgHeight = 225
-    // const base64 = await this._getBase64ByCanvas('img-canvas', this.autoWidth, this.autoHeight)
-    // // const base64 = await api.getBase64(this.tempPreviewImgSrc)
-    // console.log('base64', base64)
-    // // alert(base64)
-    // const carInfo = await this._getCarInfo(base64)
-    // console.log('carInfo', carInfo)
-    // this.initChart(carInfo.result)
-
-    // const base64 = await api.getBase64(this.tempPreviewImgSrc)
-    // console.log('base64', base64)
-    // let carInfo
-    // console.log('accessToken', this.accessToken)
-    // try {
-    //   carInfo = await api.getCarInfo(base64, this.accessToken)
-    // } catch (e) {
-    //   if (e.error_code === 110) { // token失效
-    //     await this.getToken()
-    //     carInfo = await api.getCarInfo(base64, this.accessToken)
-    //   }
-    // }
-    // console.log('carInfo', carInfo)
-    // this.initChart(carInfo.result)
   }
 }
 </script>
@@ -276,40 +241,48 @@ export default {
     align-items: center;
   }
   .img{
-    /*display: none;*/
     flex: 0 0 auto;
   }
-  .img-canvas{
+  .canvas-wrap{
+    width: 0;
+    height: 0;
     position: absolute;
-    visibility: hidden;
+    top: 0;
+    left: 750rpx;
+  }
+  .img-canvas{
   }
   .wrap{
     flex: 1;
     width: 100%;
+    position: relative;
   }
   .loadEffect{
     width: 100px;
     height: 100px;
     position: absolute;
-    margin: 0 auto;
-    margin-top:100px;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
   }
   .loadEffect span{
     display: inline-block;
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: lightgreen;
+    background: #61A0A8;
     position: absolute;
-    -webkit-animation: load 1.04s ease infinite;
+    animation: load 1.04s ease infinite;
   }
   @-webkit-keyframes load{
     0%{
-      -webkit-transform: scale(1.2);
+      transform: scale(1.2);
       opacity: 1;
     }
     100%{
-      -webkit-transform: scale(.3);
+      transform: scale(.3);
       opacity: 0.5;
     }
   }
@@ -317,44 +290,44 @@ export default {
     left: 0;
     top: 50%;
     margin-top:-10px;
-    -webkit-animation-delay:0.13s;
+    animation-delay:0.13s;
   }
   .loadEffect span:nth-child(2){
     left: 14px;
     top: 14px;
-    -webkit-animation-delay:0.26s;
+    animation-delay:0.26s;
   }
   .loadEffect span:nth-child(3){
     left: 50%;
     top: 0;
     margin-left: -10px;
-    -webkit-animation-delay:0.39s;
+    animation-delay:0.39s;
   }
   .loadEffect span:nth-child(4){
     top: 14px;
     right:14px;
-    -webkit-animation-delay:0.52s;
+    animation-delay:0.52s;
   }
   .loadEffect span:nth-child(5){
     right: 0;
     top: 50%;
     margin-top:-10px;
-    -webkit-animation-delay:0.65s;
+    animation-delay:0.65s;
   }
   .loadEffect span:nth-child(6){
     right: 14px;
     bottom:14px;
-    -webkit-animation-delay:0.78s;
+    animation-delay:0.78s;
   }
   .loadEffect span:nth-child(7){
     bottom: 0;
     left: 50%;
     margin-left: -10px;
-    -webkit-animation-delay:0.91s;
+    animation-delay:0.91s;
   }
   .loadEffect span:nth-child(8){
     bottom: 14px;
     left: 14px;
-    -webkit-animation-delay:1.04s;
+    animation-delay:1.04s;
   }
 </style>
