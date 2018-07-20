@@ -24,7 +24,7 @@ export default {
     return {
       echarts,
       option: null,
-      loading: true,
+      loading: false,
       loadingPercent: 0
     }
   },

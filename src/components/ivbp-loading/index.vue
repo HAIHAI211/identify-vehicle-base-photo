@@ -90,6 +90,11 @@
   .circle3 { right: 0; bottom: 0; }
   .circle4 { left: 0; bottom: 0; }
 
+  .container1 .circle1 {
+    -webkit-animation-delay: -1.2s;
+    animation-delay: -1.2s;
+  }
+
   .container2 .circle1 {
     -webkit-animation-delay: -1.1s;
     animation-delay: -1.1s;
