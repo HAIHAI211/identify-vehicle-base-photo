@@ -1,6 +1,6 @@
 <template>
   <div class="preview-page">
-    <image :src="tempPreviewImgSrc" class="img" mode="aspectFit"></image>
+    <image :src="tempPreviewImgSrc" class="img" mode="aspectFit" @click="preview"></image>
     <div class="wrap">
       <mpvue-echarts lazyLoad :echarts="echarts" :onInit="handleInit" ref="echarts" />
       <ivbp-loading v-if="loading" :loadingPercent="loadingPercent"/>
@@ -54,9 +54,6 @@ export default {
     })
     uploadTask.onProgressUpdate((res) => {
       this.loadingPercent = parseInt(res.progress * 0.99)
-      // console.log('上传进度', res.progress)
-      // console.log('已经上传的数据长度', res.totalBytesSent)
-      // console.log('预期需要上传的数据总长度', res.totalBytesExpectedToSend)
     })
   },
   methods: {
@@ -154,6 +151,11 @@ export default {
       }
       baseOption.series[0].data = data
       return baseOption
+    },
+    preview () {
+      wx.previewImage({
+        urls: [this.tempPreviewImgSrc]
+      })
     }
   }
 }
