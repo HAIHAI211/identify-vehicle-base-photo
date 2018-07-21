@@ -36,14 +36,18 @@ export default {
     this.loading = true
     console.log('开始上传图片，本地图片地址为', this.tempPreviewImgSrc)
     let _this = this
+    // const host = 'http://localhost:8082/car/'
+    // const host = 'http://139.199.35.20:8082/car/'
+    const host = 'https://car.blogharrison.com/car/'
     const uploadTask = wx.uploadFile({
-      url: 'http://localhost:8082/football/upload/car', // 仅为示例，非真实的接口地址
+      url: host + 'upload/complex', // 仅为示例，非真实的接口地址
       filePath: this.tempPreviewImgSrc,
       name: 'file',
       formData: {
         'token': this.accessToken
       },
       success (res) {
+        console.log('res', res)
         const data = JSON.parse(res.data)
         _this.initChart(data)
       }
