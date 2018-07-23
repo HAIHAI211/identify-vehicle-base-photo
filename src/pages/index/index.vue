@@ -1,16 +1,24 @@
 <template>
   <div class="index-page">
     <div class="upload-btn" @click="uploadBtnClick">+ 拍照/选图</div>
-    <navigator hover-class="none" class="praise-btn" target="miniProgram" open-type="navigate" app-id="wx18a2ac992306a5a4" path="pages/apps/largess/detail?accountId=4185653" extra-data="" version="release">
-      <image src="/static/praise.png" class="praise-icon"/>
-      <span class="praise-word">点我，向开发者赞赏</span>
-    </navigator>
+    <!--<navigator hover-class="none" class="praise-btn" target="miniProgram" open-type="navigate" app-id="wx18a2ac992306a5a4" path="pages/apps/largess/detail?accountId=4185653" extra-data="" version="release">-->
+      <!--<image src="/static/praise.png" class="praise-icon"/>-->
+      <!--<span class="praise-word">点我，向开发者赞赏</span>-->
+    <!--</navigator>-->
+    <div class="praise-btn-wrap">
+      <praise-btn/>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapMutations, mapActions } from 'vuex'
+import praiseBtn from '../../components/ivbp-praise-btn'
+
 export default {
+  components: {
+    praiseBtn
+  },
   data () {
     return {
     }
@@ -28,11 +36,6 @@ export default {
           const url = `../preview/main`
           wx.navigateTo({url})
         }
-      })
-    },
-    toParisePage () {
-      wx.previewImage({
-        urls: ['http://img-1255554167.picsh.myqcloud.com/2.png']
       })
     }
   },
@@ -68,19 +71,7 @@ export default {
     font-size: 20px;
     height: 120rpx;
   }
-  .praise-btn{
-    padding-top: 22px;
-    display: flex;
-  }
-  .praise-icon{
-    width: 16px;
-    height: 16px;
-    margin-right: 5px;
-    margin-top: 4px;
-  }
-  .praise-word{
-    font-size:14px;
-    color: #333;
-    border-bottom: 1px solid #333;
+  .praise-btn-wrap{
+    padding-top: 30rpx;
   }
 </style>

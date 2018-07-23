@@ -4,6 +4,10 @@
     <div class="wrap">
       <mpvue-echarts lazyLoad :echarts="echarts" :onInit="handleInit" ref="echarts" />
       <ivbp-loading v-if="loading" :loadingPercent="loadingPercent"/>
+      <ivbp-error v-if="error" :value="errorMsg"/>
+      <div class="praise-btn-wrap">
+        <praise-btn/>
+      </div>
     </div>
   </div>
 </template>
@@ -13,6 +17,9 @@ import { mapState, mapActions } from 'vuex'
 import * as echarts from '../../../static/echarts.simple.min'
 import mpvueEcharts from 'mpvue-echarts'
 import ivbpLoading from '../../components/ivbp-loading'
+import praiseBtn from '../../components/ivbp-praise-btn'
+import ivbpError from '../../components/ivbp-error'
+
 import wxPromisify from '../../utils/promise'
 const uploadFile = wxPromisify(wx.uploadFile)
 
@@ -20,14 +27,30 @@ let chart = null
 export default {
   components: {
     mpvueEcharts,
-    ivbpLoading
+    ivbpLoading,
+    praiseBtn,
+    ivbpError
   },
   data () {
     return {
       echarts,
       option: null,
       loading: false,
-      loadingPercent: 0
+      loadingPercent: 0,
+      error: false,
+      errorMsg: '遇到了小问题 请重试'
+    }
+  },
+  watch: {
+    loading (v) {
+      if (v) {
+        this.error = false
+      }
+    },
+    error (v) {
+      if (v) {
+        this.loading = false
+      }
     }
   },
   computed: {
@@ -36,12 +59,13 @@ export default {
   },
   async mounted () {
     this.loading = true
+    this.loadingPercent = 0
+    this.error = false
     console.log('开始上传图片，本地图片地址为', this.tempPreviewImgSrc)
     this._uploadFile()
   },
   methods: {
     initChart (arr) {
-      console.log('arr', arr)
       this.option = this.initOption(arr)
       console.log('this.option', this.option)
       this.$refs.echarts.init()
@@ -159,8 +183,17 @@ export default {
         const data = JSON.parse(res.data)
         this.loadingPercent = 100
         this.loading = false
-        this.initChart(data)
+
+        const d1 = data[0]
+        if (d1.name === '非车类') {
+          this.errorMsg = '我也很无奈啊 没在图里找到车'
+          this.error = true
+        } else {
+          this.initChart(data)
+        }
       } catch (e) {
+        this.errorMsg = '遇到了小问题 请重试'
+        this.error = true
         console.log('e', e)
       }
     }
@@ -187,4 +220,17 @@ export default {
     width: 100%;
     position: relative;
   }
+  .praise-btn-wrap{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding-bottom: 10rpx;
+  }
+
 </style>
