@@ -21,6 +21,7 @@ export default {
     uploadBtnClick () {
       wx.chooseImage({
         count: 1,
+        sizeType: ['compressed'],
         success: (res) => {
           console.log(res)
           this.SET_TEMP_PREVIEW_IMG_SRC(res.tempFilePaths[0])
