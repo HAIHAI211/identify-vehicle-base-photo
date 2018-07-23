@@ -1,6 +1,6 @@
 <template>
   <div class="error">
-    <image src="http://img-1255554167.picsh.myqcloud.com/4.jpg" class="error-img"/>
+    <image src="/static/error.jpg" class="error-img"/>
     <div class="error-word">{{ value }}</div>
   </div>
 </template>
