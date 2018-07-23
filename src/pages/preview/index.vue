@@ -13,6 +13,8 @@ import { mapState, mapActions } from 'vuex'
 import * as echarts from '../../../static/echarts.simple.min'
 import mpvueEcharts from 'mpvue-echarts'
 import ivbpLoading from '../../components/ivbp-loading'
+import wxPromisify from '../../utils/promise'
+const uploadFile = wxPromisify(wx.uploadFile)
 
 let chart = null
 export default {
@@ -32,29 +34,10 @@ export default {
     ...mapState(['tempPreviewImgSrc', 'accessToken']),
     ...mapActions(['getToken'])
   },
-  mounted () {
+  async mounted () {
     this.loading = true
     console.log('开始上传图片，本地图片地址为', this.tempPreviewImgSrc)
-    let _this = this
-    // const host = 'http://localhost:8082/car/'
-    // const host = 'http://139.199.35.20:8082/car/'
-    const host = 'https://car.blogharrison.com/car/'
-    const uploadTask = wx.uploadFile({
-      url: host + 'upload/complex', // 仅为示例，非真实的接口地址
-      filePath: this.tempPreviewImgSrc,
-      name: 'file',
-      formData: {
-        'token': this.accessToken
-      },
-      success (res) {
-        console.log('res', res)
-        const data = JSON.parse(res.data)
-        _this.initChart(data)
-      }
-    })
-    uploadTask.onProgressUpdate((res) => {
-      this.loadingPercent = parseInt(res.progress * 0.99)
-    })
+    this._uploadFile()
   },
   methods: {
     initChart (arr) {
@@ -62,8 +45,6 @@ export default {
       this.option = this.initOption(arr)
       console.log('this.option', this.option)
       this.$refs.echarts.init()
-      this.loadingPercent = 100
-      this.loading = false
     },
     handleInit (canvas, width, height) {
       chart = echarts.init(canvas, null, {
@@ -156,6 +137,32 @@ export default {
       wx.previewImage({
         urls: [this.tempPreviewImgSrc]
       })
+    },
+    async _uploadFile () {
+      // const host = 'http://localhost:8082/car/'
+      // const host = 'http://139.199.35.20:8082/car/'
+      const host = 'https://car.blogharrison.com/car/'
+      try {
+        const res = await uploadFile({
+          url: host + 'upload/complex', // 仅为示例，非真实的接口地址
+          filePath: this.tempPreviewImgSrc,
+          name: 'file',
+          formData: {
+            'token': this.accessToken
+          }
+        }, (uploadTask) => {
+          uploadTask.onProgressUpdate((res) => {
+            this.loadingPercent = parseInt(res.progress * 0.99)
+          })
+        })
+        console.log('res', res)
+        const data = JSON.parse(res.data)
+        this.loadingPercent = 100
+        this.loading = false
+        this.initChart(data)
+      } catch (e) {
+        console.log('e', e)
+      }
     }
   }
 }
