@@ -186,7 +186,7 @@ export default {
 
         const d1 = data[0]
         if (d1.name === '非车类') {
-          this.errorMsg = '我也很无奈啊 没在图里找到车'
+          this.errorMsg = '我也很无奈啊 没在图里找到汽车'
           this.error = true
         } else {
           this.initChart(data)

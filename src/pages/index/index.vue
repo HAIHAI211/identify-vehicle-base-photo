@@ -1,6 +1,7 @@
 <template>
   <div class="index-page">
-    <div class="upload-btn" @click="uploadBtnClick">+ 拍照/选图</div>
+    <div class="head"></div>
+    <div class="upload-btn" @click="uploadBtnClick"><span class="upload-btn-plus">+</span> 选择车辆图片</div>
     <!--<navigator hover-class="none" class="praise-btn" target="miniProgram" open-type="navigate" app-id="wx18a2ac992306a5a4" path="pages/apps/largess/detail?accountId=4185653" extra-data="" version="release">-->
       <!--<image src="/static/praise.png" class="praise-icon"/>-->
       <!--<span class="praise-word">点我，向开发者赞赏</span>-->
@@ -62,14 +63,20 @@ export default {
   }
   .upload-btn{
     width: 463.5rpx;
+    box-sizing: border-box;
     border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
     background:#108ee9;
     color: #fff;
-    font-size: 20px;
+    font-size: 22px;
     height: 120rpx;
+  }
+  .upload-btn-plus{
+    font-size: 40px;
+    padding-right: 10px;
+    padding-bottom: 5px;
   }
   .praise-btn-wrap{
     padding-top: 30rpx;
