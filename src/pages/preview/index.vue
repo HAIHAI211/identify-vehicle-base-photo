@@ -5,9 +5,9 @@
       <mpvue-echarts lazyLoad :echarts="echarts" :onInit="handleInit" ref="echarts" />
       <ivbp-loading v-if="loading" :loadingPercent="loadingPercent"/>
       <ivbp-error v-if="error" :value="errorMsg"/>
-      <div class="praise-btn-wrap">
-        <praise-btn/>
-      </div>
+    </div>
+    <div class="praise-btn-wrap">
+      <praise-btn/>
     </div>
   </div>
 </template>
@@ -221,12 +221,7 @@ export default {
     position: relative;
   }
   .praise-btn-wrap{
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
+    flex: 0 0 auto;
     display: flex;
     justify-content: center;
     align-items: flex-end;
