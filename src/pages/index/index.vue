@@ -1,6 +1,15 @@
 <template>
   <div class="index-page">
-    <div class="head"></div>
+    <div class="head">
+      <div class="head-img-wrap">
+        <image class="head-img" src="/static/car-icon.png"/>
+        <image class="icon-title" src="/static/icon-title.png"/>
+      </div>
+      <div class="head-word">
+        <span class="title">精准识别具体车型</span>
+        <span class="subtitle">拍摄汽车正面|侧面|后面都可以</span>
+      </div>
+    </div>
     <div class="upload-btn" @click="uploadBtnClick"><span class="upload-btn-plus">+</span> 选择车辆图片</div>
     <!--<navigator hover-class="none" class="praise-btn" target="miniProgram" open-type="navigate" app-id="wx18a2ac992306a5a4" path="pages/apps/largess/detail?accountId=4185653" extra-data="" version="release">-->
       <!--<image src="/static/praise.png" class="praise-icon"/>-->
@@ -60,6 +69,44 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+  }
+  .head{
+    position: absolute;
+    top: 30rpx;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    box-sizing: border-box;
+    padding-left: 40rpx;
+  }
+  .head-img-wrap{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 46rpx;
+  }
+  .head-img{
+    width: 166rpx;
+    height: 90rpx;
+  }
+  .icon-title{
+    margin-top: 5rpx;
+    width: 87rpx;
+    height: 39rpx;
+  }
+  .head-word{
+    display: flex;
+    flex-direction: column;
+  }
+  .title{
+    color: rgba(0,0,0,.85);
+    font-size: 25px;
+    font-weight: 400;
+  }
+  .subtitle{
+    color: rgba(0,0,0,.65);
+    font-size: 12px;
+    line-height: 1.5;
   }
   .upload-btn{
     width: 463.5rpx;
