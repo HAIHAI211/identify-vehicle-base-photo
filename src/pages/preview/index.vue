@@ -197,6 +197,13 @@ export default {
         console.log('e', e)
       }
     }
+  },
+  onShareAppMessage (res) {
+    return {
+      title: '鉴图识车，如你所见',
+      path: '/pages/index/main',
+      imageUrl: ''
+    }
   }
 }
 </script>
