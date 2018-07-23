@@ -1,10 +1,10 @@
 <template>
   <div class="index-page">
     <div class="upload-btn" @click="uploadBtnClick">+ 拍照/选图</div>
-    <div class="praise-btn" @click="toParisePage">
+    <navigator hover-class="none" class="praise-btn" target="miniProgram" open-type="navigate" app-id="wx18a2ac992306a5a4" path="pages/apps/largess/detail?accountId=4185653" extra-data="" version="release">
       <image src="/static/praise.png" class="praise-icon"/>
       <span class="praise-word">点我，向开发者赞赏</span>
-    </div>
+    </navigator>
   </div>
 </template>
 
@@ -34,8 +34,6 @@ export default {
       wx.previewImage({
         urls: ['http://img-1255554167.picsh.myqcloud.com/2.png']
       })
-      // const url = `../praise/main`
-      // wx.navigateTo({url})
     }
   },
   created () {
