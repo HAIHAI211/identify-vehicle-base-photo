@@ -2,7 +2,6 @@
   <div class="preview-page">
     <image :src="tempPreviewImgSrc" class="img" mode="aspectFit" @click="preview"></image>
     <div class="wrap">
-      <!--<mpvue-echarts lazyLoad :echarts="echarts" :onInit="handleInit" ref="echarts" />-->
       <div class="result" v-if="arr.length">
         <div class="row" v-for="item in arr" :key="index">
           <span class="index">{{ index + 1 }}</span>
@@ -26,26 +25,20 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import * as echarts from '../../../static/echarts.simple.min'
-import mpvueEcharts from 'mpvue-echarts'
 import ivbpLoading from '../../components/ivbp-loading'
 import praiseBtn from '../../components/ivbp-praise-btn'
 import ivbpError from '../../components/ivbp-error'
 
 import wxPromisify from '../../utils/promise'
 const uploadFile = wxPromisify(wx.uploadFile)
-
-let chart = null
 export default {
   components: {
-    mpvueEcharts,
     ivbpLoading,
     praiseBtn,
     ivbpError
   },
   data () {
     return {
-      echarts,
       option: null,
       loading: false,
       loadingPercent: 0,
@@ -82,98 +75,6 @@ export default {
     this._uploadFile()
   },
   methods: {
-    initChart (arr) {
-      this.option = this.initOption(arr)
-      console.log('this.option', this.option)
-      this.$refs.echarts.init()
-    },
-    handleInit (canvas, width, height) {
-      chart = echarts.init(canvas, null, {
-        width: width,
-        height: height
-      })
-      canvas.setChart(chart)
-      chart.setOption(this.option)
-      return chart
-    },
-    initOption (arr) {
-      const baseOption = {
-        backgroundColor: '#ffffff',
-        series: [{
-          name: '车型概率',
-          label: {
-            normal: {
-              formatter: '{b|{b}}\n{hr|}\n{a|{a}: }{per|{d}%}{abg|}',
-              backgroundColor: '#eee',
-              borderColor: '#aaa',
-              borderWidth: 0.5,
-              borderRadius: 4,
-              // shadowBlur:3,
-              // shadowOffsetX: 2,
-              // shadowOffsetY: 2,
-              // shadowColor: '#999',
-              // padding: [0, 7],
-              rich: {
-                a: {
-                  fontSize: 10,
-                  color: '#999',
-                  lineHeight: 20,
-                  align: 'center'
-                },
-                // abg: {
-                //     backgroundColor: '#333',
-                //     width: '100%',
-                //     align: 'right',
-                //     height: 22,
-                //     borderRadius: [4, 4, 0, 0]
-                // },
-                hr: {
-                  borderColor: '#aaa',
-                  width: '100%',
-                  borderWidth: 0.5,
-                  height: 0
-                },
-                b: {
-                  fontSize: 10,
-                  lineHeight: 22,
-                  align: 'center'
-                },
-                per: {
-                  fontSize: 9,
-                  color: '#eee',
-                  backgroundColor: '#334455',
-                  padding: [1, 1.3],
-                  borderRadius: 2,
-                  align: 'center'
-                }
-              }
-            }
-          },
-          type: 'pie',
-          center: ['50%', '50%'],
-          radius: ['0%', '36%'],
-          data: [],
-          itemStyle: {
-            emphasis: {
-              shadowBlur: 10,
-              shadowOffsetX: 0,
-              shadowColor: 'rgba(0, 2, 2, 0.3)'
-            }
-          }
-        }]
-      }
-      const data = []
-      for (let i = 0; i < arr.length; i++) {
-        let a = arr[i]
-        console.log(i, a)
-        data.push({
-          value: a.score,
-          name: a.name
-        })
-      }
-      baseOption.series[0].data = data
-      return baseOption
-    },
     preview () {
       wx.previewImage({
         urls: [this.tempPreviewImgSrc]
@@ -244,7 +145,6 @@ export default {
           this.errorMsg = '我也很无奈啊 没在图里找到汽车'
           this.error = true
         } else {
-          // this.initChart(this.arr)
           this._getPercentBg(color)
           this.arr = this._dealArr(arr)
         }
