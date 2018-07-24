@@ -11,10 +11,6 @@
       </div>
     </div>
     <div class="upload-btn" @click="uploadBtnClick"><span class="upload-btn-plus">+</span> 选择车辆图片</div>
-    <!--<navigator hover-class="none" class="praise-btn" target="miniProgram" open-type="navigate" app-id="wx18a2ac992306a5a4" path="pages/apps/largess/detail?accountId=4185653" extra-data="" version="release">-->
-      <!--<image src="/static/praise.png" class="praise-icon"/>-->
-      <!--<span class="praise-word">点我，向开发者赞赏</span>-->
-    <!--</navigator>-->
     <div class="praise-btn-wrap">
       <praise-btn/>
     </div>

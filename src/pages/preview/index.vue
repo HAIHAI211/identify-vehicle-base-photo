@@ -111,7 +111,9 @@ export default {
       } else if (colorName === '棕色') {
         this.percentBg = 'linear-gradient(to right, #804000, #555555);'
       } else if (colorName === '白色') {
-        this.percentBg = 'linear-gradient(to right, #ece9e6, #ffffff);'
+        // this.percentBg = 'linear-gradient(to right, #ece9e6, #ffffff);'
+      } else if (colorName === '黄色') {
+        this.percentBg = 'linear-gradient(to right, #ffe000, #799f0c);'
       }
     },
     async _uploadFile () {
